@@ -1,85 +1,65 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlane, faTrain, faShip, faCar, faCalendar, faUser } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlane,
+  faTrain,
+  faShip,
+  faCar,
+  faCalendar,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+import "./App.css";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 
 const Tab = ({ title, activeTab, onClick }) => {
   const tabIcons = {
-    "Tab 1": faPlane,
-    "Tab 2": faTrain,
-    "Tab 3": faShip,
-    "Tab 4": faCar,
+    flight: faPlane,
+    trains: faTrain,
+    ship: faShip,
+    cars: faCar,
   };
 
   return (
     <button
-      className={`px-4 py-2 ${
-        activeTab === title ? "bg-blue-500 text-white" : "bg-white-500 text-black"
+      className={`h-12 w-full  ${
+        activeTab === title
+          ? "bg-blue-500 text-white"
+          : "bg-white-500 text-black"
       }`}
       onClick={() => onClick(title)}
       style={{
         background: activeTab === title ? "#74c684" : "#ffffff",
       }}
     >
-      <FontAwesomeIcon
-        icon={tabIcons[title]}
-        className="mr-2"
-      />
+      <FontAwesomeIcon icon={tabIcons[title]} className="mr-1" />
       {title}
     </button>
   );
 };
 
-const TabContent = ({ activeTab, formValues, onChange }) => {
-  if (activeTab === "Tab 1") {
-    return (
-      <div className="bg-e9f0f8 p-4 w-100">
-        <h2>Search results</h2>
-        {/* Add your content for Tab 1 here */}
-      </div>
-    );
-  } else if (activeTab === "Tab 2") {
-    return (
-      <div className="bg-e9f0f8 p-4 w-80">
-        <h2>Search results</h2>
-
-        {/* Add your content for Tab 2 here */}
-      </div>
-    );
-  } else if (activeTab === "Tab 3") {
-    return (
-      <div className="bg-e9f0f8 p-4 w-100">
-        <h2>Search results</h2>
-        {/* Add your content for Tab 3 here */}
-      </div>
-    );
-  } else if (activeTab === "Tab 4") {
-    return (
-      <div className="bg-e9f0f8 p-4 w-100">
-        <h2>Search results</h2>
-        {/* Add your content for Tab 4 here */}
-      </div>
-    );
-  }
-};
-
 const App = () => {
-  const [activeTab, setActiveTab] = useState("Tab 1");
-  const [formValues, setFormValues] = useState({});
+  const [activeIcon, setActiveIcon] = useState(1);
+
+  const IconWithBackground = ({ children, isActive }) => (
+    <div
+      className={`p-1 rounded-lg ${isActive ? "bg-blue-500" : "bg-gray-300"}`}
+    >
+      {children}
+    </div>
+  );
+
+  const handleIconClick = (direction) => {
+    if (direction === "left") {
+      setActiveIcon((prevIcon) => (prevIcon > 1 ? prevIcon - 1 : 1));
+    } else if (direction === "right") {
+      setActiveIcon((prevIcon) => (prevIcon < 3 ? prevIcon + 1 : 3));
+    }
+  };
+
+  const [activeTab, setActiveTab] = useState("flight");
 
   const handleTabClick = (title) => {
     setActiveTab(title);
-  };
-
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    // Process the form values and update the content accordingly
-    // For this example, we'll just update the formValues state with the form data
-    const formData = new FormData(e.target);
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    setFormValues(data);
   };
 
   return (
@@ -99,18 +79,29 @@ const App = () => {
       >
         <div
           className="w-1/3"
-          style={{ background: "#e9f0f8", height: "70vh" }}
+          style={{ background: "#e9f0f8", height: "80vh" }}
         >
-          <h1>Ticket4U</h1>
-          <div className="flex space-x-4">
-            <Tab title="Tab 1" activeTab={activeTab} onClick={handleTabClick} />
-            <Tab title="Tab 2" activeTab={activeTab} onClick={handleTabClick} />
-            <Tab title="Tab 3" activeTab={activeTab} onClick={handleTabClick} />
-            <Tab title="Tab 4" activeTab={activeTab} onClick={handleTabClick} />
+          <h6 className="text-blue-500">Ticket4U</h6>
+          <div className="flex space-x-4 m-2  ">
+            <Tab
+              className=""
+              title="flight"
+              activeTab={activeTab}
+              onClick={handleTabClick}
+            />
+            <Tab
+              title="trains"
+              activeTab={activeTab}
+              onClick={handleTabClick}
+            />
+            <Tab title="ship" activeTab={activeTab} onClick={handleTabClick} />
+            <Tab title="cars" activeTab={activeTab} onClick={handleTabClick} />
           </div>
+          <p className="text-gray-400">Best Flight Deals with</p>
+          <h1 className="text-blue-500 font-bold">Ticket4U</h1>
           <form onSubmit={(e) => e.preventDefault()}>
-            <div className="mb-4">
-              <label className="block text-xl">Depart Time</label>
+            <div className="mb-2">
+              <label className=" text-xs text-gray-400">Depart from</label>
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faPlane}
@@ -118,13 +109,13 @@ const App = () => {
                 />
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border rounded-lg pl-10"
+                  className="w-full text-gray-400 px-4 py-2 border rounded-lg pl-10"
                   placeholder="London - All airport England-UK"
                 />
               </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-xl">Arrive Time</label>
+            <div className="mb-2">
+              <label className=" text-xs text-gray-400">Arrive at</label>
               <div className="relative">
                 <FontAwesomeIcon
                   icon={faPlane}
@@ -132,65 +123,75 @@ const App = () => {
                 />
                 <input
                   type="text"
-                  className="w-full px-4 py-2 border rounded-lg pl-10"
+                  className="w-full px-4 text-gray-400 py-2 border rounded-lg pl-10"
                   placeholder="New York - All airport New york USA"
                 />
               </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-xl">Departure Date</label>
-              <div className="relative">
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
-                />
-                <input
-                  type="date"
-                  className="w-full px-4 py-2 border rounded-lg pl-10"
-                  placeholder="Today's Date"
-                />
-              </div>
-              <label className="block text-xl">Return Date</label>
-              <div className="relative">
-                <FontAwesomeIcon
-                  icon={faCalendar}
-                  className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
-                />
-                <input
-                  type="date"
-                  className="w-full px-4 py-2 border rounded-lg pl-10"
-                  placeholder="Today's Date"
-                />
-              </div>
-            </div>
-            <div className="mb-4">
-              <label className="block text-xl">Class</label>
-              <div className="flex items-center">
-                <select className="w-full px-4 py-2 border rounded-lg pl-10">
+            <div className="mb-2 flex">
+              <div className="w-1/2">
+                <label className="text-xs text-gray-400">Departure Date</label>
+                <div className="relative">
                   <FontAwesomeIcon
-                    icon={faPlane}
+                    icon={faCalendar}
                     className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
                   />
-                  <option placeholder="Economy">Economy</option>
-                  <option placeholder="Business">Business</option>
-                  <option placeholder="First Class">First Class</option>
-                </select>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-2 border rounded-lg text-gray-400 pl-10"
+                    placeholder="Today's Date"
+                  />
+                </div>
               </div>
-              <label className="block text-xl">Passengers</label>
-              <div className="flex items-center">
-                <select className="w-full px-4 py-2 border rounded-lg pl-10">
+              <div className="w-1/2">
+                <label className="text-xs text-gray-400">Return Date</label>
+                <div className="relative">
                   <FontAwesomeIcon
-                    icon={faUser}
+                    icon={faCalendar}
                     className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
                   />
-                  <option placeholder="1">1</option>
-                  <option placeholder="2">2</option>
-                  <option placeholder="3">3</option>
-                  <option placeholder="4">4</option>
-                  <option placeholder="5">5</option>
-                </select>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-2 border rounded-lg text-gray-400 pl-10"
+                    placeholder="Today's Date"
+                  />
+                </div>
               </div>
             </div>
+
+            <div className="mb-2 flex">
+              <div className="w-1/2">
+                <label className="text-xs text-gray-400">Class</label>
+                <div className="flex items-center">
+                  <select className="w-full px-4 py-2 text-gray-400 border rounded-lg pl-10">
+                    <FontAwesomeIcon
+                      icon={faPlane}
+                      className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
+                    />
+                    <option placeholder="Economy">Economy</option>
+                    <option placeholder="Business">Business</option>
+                    <option placeholder="First Class">First Class</option>
+                  </select>
+                </div>
+              </div>
+              <div className="w-1/2">
+                <label className="text-xs text-gray-400">Passengers</label>
+                <div className="flex items-center">
+                  <select className="w-3/4 px-4 py-2 border rounded-lg text-gray-400 pl-10">
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
+                    />
+                    <option placeholder="1">1</option>
+                    <option placeholder="2">2</option>
+                    <option placeholder="3">3</option>
+                    <option placeholder="4">4</option>
+                    <option placeholder="5">5</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <button
               type="submit"
               className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg"
@@ -201,14 +202,101 @@ const App = () => {
           </form>
         </div>
         <div
-          className="w-2/3"
-          style={{ backgroundColor: "#f3f6fd", height: "70vh" }}
+          className="w-full"
+          style={{ backgroundColor: "#f3f6fd", height: "80vh" }}
         >
-          <TabContent
-            activeTab={activeTab}
-            formValues={formValues}
-            onChange={handleFormSubmit}
-          />
+          <div className="bg-e9f0f8 p-4 w-full">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl">Search results</h2>
+              <div className="flex">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className={`w-40 px-4 py-2 border rounded-full ${
+                      activeTab === "CHEAPEST"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    placeholder="CHEAPEST"
+                  />
+                </div>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className={`w-40 px-4 py-2 border rounded-full ${
+                      activeTab === "SHORTEST"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    placeholder="SHORTEST"
+                  />
+                </div>
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    className={`w-40 px-4 py-2 border rounded-full ${
+                      activeTab === "RECOMMEND"
+                        ? "bg-blue-500 text-white"
+                        : "bg-white text-black"
+                    }`}
+                    placeholder="RECOMMEND"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <h2>
+            London <i className="fa fa-arrow-right"></i> New York
+          </h2>
+          <div className="flex items-center bg-white-500 justify-between  border border-gray-300 rounded-lg">
+              <div className="flex items-center">
+                <img
+                  src="./assets/brand.gif" // Replace with the path to your logo image
+                  alt="Logo"
+                  className="w-8 h-8 mr-4"
+                />
+                <div>
+                  <p className="text-sm">Departure Time</p>
+                  <p className="text-lg font-semibold">10:00 AM</p>
+                </div>
+              </div>
+              <div className="text-center">
+                <p className="text-sm">Arrival Time</p>
+                <p className="text-lg font-semibold">12:00 PM</p>
+              </div>
+              <div>
+                <p className="text-sm">Price</p>
+                <p className="text-lg font-semibold">$200</p>
+              </div>
+            </div>
+          <div className="flex items-center space-x-4">
+            
+            <IconWithBackground isActive={activeIcon === 1}>
+              <ChevronLeftIcon
+                className={`w-6 h-6 text-gray-500 cursor-pointer ${
+                  activeIcon === 1 ? "text-white" : ""
+                }`}
+                onClick={() => handleIconClick("left")}
+              />
+            </IconWithBackground>
+            <IconWithBackground isActive={activeIcon === 1}>
+              1
+            </IconWithBackground>
+            <IconWithBackground isActive={activeIcon === 2}>
+              2
+            </IconWithBackground>
+            <IconWithBackground isActive={activeIcon === 3}>
+              3
+            </IconWithBackground>
+            <IconWithBackground isActive={activeIcon === 3}>
+              <ChevronRightIcon
+                className={`w-6 h-6 text-gray-500 cursor-pointer ${
+                  activeIcon === 3 ? "text-white" : ""
+                }`}
+                onClick={() => handleIconClick("right")}
+              />
+            </IconWithBackground>
+          </div>
         </div>
       </div>
     </div>
